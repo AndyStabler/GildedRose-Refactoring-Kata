@@ -34,6 +34,8 @@ class ItemFactory
       AgedBrie.new(item)
     when "Sulfuras, Hand of Ragnaros"
       Sulfuras.new(item)
+    when "ConjuredItem"
+      ConjuredItem.new(item)
     else
       Unknown.new(item)
     end
@@ -68,5 +70,22 @@ class TAFKAL80ETC < ItemDecorator
     item.quality += 1 if item.sell_in < 11 && item.quality < 50
     item.quality += 1 if item.sell_in < 6 && item.quality < 50
     item.sell_in -= 1
+  end
+end
+
+class ConjuredItem < ItemDecorator
+  def tick
+    degrade_quality 2
+    if item.sell_in < 0
+      degrade_quality 2
+    end
+    item.sell_in -= 1
+  end
+
+  private
+
+  def degrade_quality(value)
+    item.quality -= value
+    item.quality = 0 if item.quality < 0
   end
 end
