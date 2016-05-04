@@ -251,5 +251,38 @@ describe GildedRose do
         .not_to change { item.sell_in }
       end
     end
+
+    context "for ConjuredItems" do
+      context "when the sell in is not less than 0" do
+        it "should decrease quality by 2" do
+          item = Item.new("ConjuredItem", 10, 10)
+          rose = GildedRose.new([item])
+          expect { rose.update_quality }
+          .to change { item.quality }
+          .from(10)
+          .to(8)
+        end
+      end
+
+      context "when the sell in is less than 0" do
+        it "should decrease quality by 4" do
+          item = Item.new("ConjuredItem", -1, 10)
+          rose = GildedRose.new([item])
+          expect { rose.update_quality }
+          .to change { item.quality }
+          .from(10)
+          .to(6)
+        end
+      end
+
+      it "should decrease the sell in by 1" do
+        item = Item.new("ConjuredItem", 10, 10)
+        rose = GildedRose.new([item])
+        expect { rose.update_quality }
+        .to change { item.sell_in }
+        .from(10)
+        .to(9)
+      end
+    end
   end
 end
